@@ -29,7 +29,7 @@
 #include <cassert>
 #include <unistd.h>
 #include <time.h>
-
+#include <chrono>
 
 #if defined __linux__ || defined __APPLE__
 // "Compiled for Linux
@@ -229,16 +229,20 @@ void render(const std::vector<Sphere> &spheres)
     float fov = 30, aspectratio = width / float(height);
     float angle = tan(M_PI * 0.5 * fov / 180.);
     // Trace rays
+    
+//#paragma omp declare target map(tofrom:spheres)
+//#pragma omp target teams distribute parallel for
 
-    #pragma omp parallel for
-    for (unsigned y = 0; y < height; y++) {
-
-        if (y % 10 == 0)
+#pragma omp declare target
+#pragma omp parallel for 
+ for (unsigned y = 0; y < height; y++) {
+/*
+        if (y % 50 == 0)
         {
             std::cerr << "rendering " << y << " of " << height << std::endl;
         }
-
-        for (unsigned int x = 0; x < width; x++) {
+*/
+       for (unsigned int x = 0; x < width; x++) {
             float xx = (2 * ((x + 0.5) * invWidth) - 1) * angle * aspectratio;
             float yy = (1 - 2 * ((y + 0.5) * invHeight)) * angle;
             Vec3f raydir(xx, yy, -1);
@@ -248,8 +252,8 @@ void render(const std::vector<Sphere> &spheres)
             image[y*width+x] = trace(Vec3f(0), raydir, spheres, 0);
         }
     }
-
-    // Save result to a PPM image (keep these flags if you compile under Windows)
+#pragma omp end declare target
+   // Save result to a PPM image (keep these flags if you compile under Windows)
     std::ofstream ofs("./untitled.ppm", std::ios::out | std::ios::binary);
     ofs << "P6\n" << width << " " << height << "\n255\n";
     for (unsigned i = 0; i < width * height; ++i) {
@@ -259,8 +263,8 @@ void render(const std::vector<Sphere> &spheres)
     }
     ofs.close();
     delete [] image;
+  
 }
-
 //[comment]
 // In the main function, we will create the scene which is composed of 5 spheres
 // and 1 light (which is also a sphere). Then, once the scene description is complete
@@ -268,30 +272,23 @@ void render(const std::vector<Sphere> &spheres)
 //[/comment]
 int main(int argc, char **argv)
 {
-    // srand48(13);
     srand48(time(NULL) ^ getpid());
     std::vector<Sphere> spheres;
-    // position, radius, surface color, reflectivity, transparency, emission color
-
-    // spheres.push_back(Sphere(Vec3f( 0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
-    // spheres.push_back(Sphere(Vec3f( 0.0,      0, -20),     4, Vec3f(1.00, 0.32, 0.36), 1, 0.5));
-    // spheres.push_back(Sphere(Vec3f( 5.0,     -1, -15),     2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
-    // spheres.push_back(Sphere(Vec3f( 5.0,      0, -25),     3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
-    // spheres.push_back(Sphere(Vec3f(-5.5,      0, -15),     3, Vec3f(0.90, 0.90, 0.90), 1, 0.0));
-    // // light
-    // spheres.push_back(Sphere(Vec3f( 0.0,     20, -30),     3, Vec3f(0.00, 0.00, 0.00), 0, 0.0, Vec3f(3)));
-
-    static const int NUM_SPHERES=3000;
+    static const int NUM_SPHERES=500;
 
     for (int s=0; s<NUM_SPHERES; s++)
     {
-//        spheres.push_back(Sphere(Vec3f(0.0, 0.0, -50), 5, Vec3f(.2,.8,.2), .6, 0.5));
-
         spheres.push_back(Sphere(Vec3f(drand48()*30-15, drand48()*30-15, -50+drand48()*10-5), 5, Vec3f(drand48(), drand48(), drand48()), .2, 0.5));
     }
 
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
     render(spheres);
-    
+
+    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+
+    std::cout <<"The execution time of " << NUM_SPHERES << " spheres was: " << time_span.count() << " seconds." << std::endl;
+
     return 0;
 }
