@@ -245,12 +245,26 @@ void render(const std::vector<Sphere> &spheres)
         }
     }
 
+
+
 #pragma omp target teams distribute parallel for
   for (){
   
   }
 
-#pragma omp parallel 
+
+
+
+#pragma omp parallel for
+  for (){
+  
+  }
+
+
+
+
+
+
             // *pixel = trace(Vec3f(0), raydir, spheres, 0);
 
    // Save result to a PPM image (keep these flags if you compile under Windows)
