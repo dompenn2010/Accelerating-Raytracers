@@ -20,16 +20,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // [/ignore]
-#include <cstdlib>
-#include <cstdio>
-#include <cmath>
-#include <fstream>
-#include <vector>
-#include <iostream>
-#include <cassert>
+
+#include <math.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <time.h>
-#include <chrono>
+
+
+//#include <cstdlib>
+//#include <cstdio>
+//#include <cmath>
+//#include <iostream>
+//#include <cassert>
+//#include <chrono>
+
+#include <fstream>
+#include <vector>
 
 #if defined __linux__ || defined __APPLE__
 // "Compiled for Linux
@@ -39,10 +45,16 @@
 #define INFINITY 1e8
 #endif
 
-template<typename T>
-class Vec3
+float findMin(float a, float b)
 {
-public:
+    return ((a) < (b) ? (a) : (b));
+}
+
+template<typename T>
+
+struct Vec3
+{
+
     T x, y, z;
     Vec3() : x(T(0)), y(T(0)), z(T(0)) {}
     Vec3(T xx) : x(xx), y(xx), z(xx) {}
@@ -56,7 +68,7 @@ public:
         }
         return *this;
     }
-    Vec3<T> operator * (const T &f) const { return Vec3<T>(x * f, y * f, z * f); }
+    Vec3<T> operator * (const float &f) const { return Vec3<T>(x * f, y * f, z * f); }
     Vec3<T> operator * (const Vec3<T> &v) const { return Vec3<T>(x * v.x, y * v.y, z * v.z); }
     T dot(const Vec3<T> &v) const { return x * v.x + y * v.y + z * v.z; }
     Vec3<T> operator - (const Vec3<T> &v) const { return Vec3<T>(x - v.x, y - v.y, z - v.z); }
@@ -66,18 +78,110 @@ public:
     Vec3<T> operator - () const { return Vec3<T>(-x, -y, -z); }
     T length2() const { return x * x + y * y + z * z; }
     T length() const { return sqrt(length2()); }
-    friend std::ostream & operator << (std::ostream &os, const Vec3<T> &v)
-    {
-        os << "[" << v.x << " " << v.y << " " << v.z << "]";
-        return os;
-    }
+
+// Do I need this at all?
+//    friend std::ostream & operator << (std::ostream &os, const Vec3<T> &v)
+//    {
+//        os << "[" << v.x << " " << v.y << " " << v.z << "]";
+//        return os;
+//    }
 };
 
 typedef Vec3<float> Vec3f;
 
-class Sphere
+/////////////////////////////////////////////////////////////
+/*                  TESTING CODE BELOW HERE                */ 
+/////////////////////////////////////////////////////////////
+
+struct Vector3f
 {
-public:
+    float x, y, z;
+};
+
+void mul_Vec3_Const(const Vec3f * v1, Vec3f * v2, float f)
+{
+  v2->x = v1->x *f;
+  v2->y = v1->y *f;
+  v2->z = v1->z *f;
+
+}
+
+void mul_Vec3_Vec3(Vec3f * v1, Vec3f * v2, Vec3f * v3)
+{
+  v3->x = v1->x * v2->x;
+  v3->y = v1->y * v2->y;
+  v3->z = v1->z * v2->z;
+
+}
+
+void dot_Vec3(const Vec3f * v1, const Vec3f * v2, float * f)
+{
+  * f = (v1->x * v2->x) + (v1->y * v2->y) + (v1->z * v2->z);
+
+}
+
+
+void sub_Vec3_Vec3(const Vec3f * v1, const Vec3f * v2, Vec3f * v3)
+{
+  v3->x = v1->x - v2->x;
+  v3->y = v1->y - v2->y;
+  v3->z = v1->z - v2->z;
+
+}
+
+
+void add_Vec3_Vec3(const Vec3f * v1, const Vec3f * v2, Vec3f * v3)
+{
+  v3->x = v1->x + v2->x;
+  v3->y = v1->y + v2->y;
+  v3->z = v1->z + v2->z;
+
+}
+
+void addeq_Vec3_Vec3(Vec3f * v1, Vec3f * v2)
+{
+  v1->x += v2->x;
+  v1->y += v2->y;
+  v1->z += v2->z;
+
+}
+
+void muleq_Vec3_Vec3(Vec3f * v1, Vec3f * v2)
+{
+  v1->x *= v2->x;
+  v1->y *= v2->y;
+  v1->z *= v2->z;
+
+}
+
+void negate_Vec3(Vec3f * v1)
+{
+  v1->x = v1->x * -1;
+  v1->y = v1->y * -1;
+  v1->z = v1->z * -1;
+}
+
+
+void length2_Vec3(Vec3f * v1, float * f)
+{
+  * f = ((v1->x * v1->x) + (v1->y * v1->y) + (v1->z * v1->z));
+}
+
+
+void length_Vec3(Vec3f * v1, float * f)
+{
+  * f = sqrt((v1->x * v1->x) + (v1->y * v1->y) + (v1->z * v1->z));
+}
+
+
+/////////////////////////////////////////////////////////////
+/*                  TESTING CODE ABOVE HERE                */ 
+/////////////////////////////////////////////////////////////
+
+
+struct Sphere
+{
+
     Vec3f center;                           /// position of the sphere
     float radius, radius2;                  /// sphere radius and radius^2
     Vec3f surfaceColor, emissionColor;      /// surface color and emission (light)
@@ -97,15 +201,25 @@ public:
     //[/comment]
     bool intersect(const Vec3f &rayorig, const Vec3f &raydir, float &t0, float &t1) const
     {
+
         Vec3f l = center - rayorig;
         float tca = l.dot(raydir);
-        if (tca < 0) return false;
+
+        if (tca < 0)
+        {
+          return false ;
+        }
+
         float d2 = l.dot(l) - tca * tca;
-        if (d2 > radius2) return false;
+
+        if (d2 > radius2) {
+          return false;
+        }
+
         float thc = sqrt(radius2 - d2);
         t0 = tca - thc;
         t1 = tca + thc;
-        
+
         return true;
     }
 };
@@ -154,8 +268,27 @@ Vec3f trace(
     // if there's no intersection return black or background color
     if (!sphere) return Vec3f(2);
     Vec3f surfaceColor = 0; // color of the ray/surfaceof the object intersected by the ray
-    Vec3f phit = rayorig + raydir * tnear; // point of intersection
-    Vec3f nhit = phit - sphere->center; // normal at the intersection point
+
+    //Vec3f phit = rayorig + raydir * tnear; // point of intersection
+
+    Vec3f phit;
+    Vec3f raydirInf;
+    mul_Vec3_Const(&raydir, &raydirInf, tnear);
+    add_Vec3_Vec3(&rayorig, &raydirInf, &phit);
+
+    // printf("x: %.2f\ny: %.2f\nz: %.2f\n",phit.x, phit.y, phit.z);
+
+
+    //Vec3f nhit = phit - sphere->center; // normal at the intersection point
+    //printf("FIRST x: %.2f\ny: %.2f\nz: %.2f\n",nhit.x, nhit.y, nhit.z);
+    
+    //nhit.x = 0;
+    //nhit.y = 0;
+    //nhit.z = 0;
+
+    Vec3f nhit;
+    sub_Vec3_Vec3(&phit, &sphere->center, &nhit);
+    
     nhit.normalize(); // normalize normal direction
     // If the normal and the view direction are not opposite to each other
     // reverse the normal direction. That also means we are inside the sphere so set
@@ -163,14 +296,45 @@ Vec3f trace(
     // positive.
     float bias = 1e-4; // add some bias to the point from which we will be tracing
     bool inside = false;
-    if (raydir.dot(nhit) > 0) nhit = -nhit, inside = true;
+   // if (raydir.dot(nhit) > 0){} nhit = -nhit, inside = true;
+    float normView;
+    dot_Vec3(&raydir, &nhit, &normView);
+    
+    if (normView > 0)
+    {
+        //nhit = -nhit;
+        negate_Vec3(&nhit);
+        inside = true;
+    }
+
+
     if ((sphere->transparency > 0 || sphere->reflection > 0) && depth < MAX_RAY_DEPTH) {
-        float facingratio = -raydir.dot(nhit);
+        //float facingratio = -raydir.dot(nhit);
+        float facingratio;
+        
+        dot_Vec3(&raydir, &nhit, &facingratio);
+        facingratio = -facingratio;
+
+
         // change the mix value to tweak the effect
         float fresneleffect = mix(pow(1 - facingratio, 3), 1, 0.1);
         // compute reflection direction (not need to normalize because all vectors
         // are already normalized)
-        Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
+
+        // v - v * const * const
+        //Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
+        Vec3f refldir;
+
+        float dotRaydirNhit;
+        dot_Vec3(&raydir, &nhit, &dotRaydirNhit);
+        
+        Vec3f mulNhit;
+        mul_Vec3_Const(&nhit, &mulNhit, (dotRaydirNhit * 2));
+        sub_Vec3_Vec3(&raydir, &mulNhit, &refldir);
+
+        //printf("FIRST x: %.2f\ny: %.2f\nz: %.2f\n",refldir.x, refldir.y, refldir.z);
+        //printf("SECOND x: %.2f\ny: %.2f\nz: %.2f\n",refldir1.x, refldir1.y, refldir1.z);
+
         refldir.normalize();
         Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
         Vec3f refraction = 0;
@@ -206,11 +370,12 @@ Vec3f trace(
                     }
                 }
                 surfaceColor += sphere->surfaceColor * transmission *
-                std::max(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
+                //std::max(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
+                findMin(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
             }
         }
     }
-    
+
     return surfaceColor + sphere->emissionColor;
 }
 
@@ -229,12 +394,12 @@ void render(const std::vector<Sphere> &spheres)
     float fov = 30, aspectratio = width / float(height);
     float angle = tan(M_PI * 0.5 * fov / 180.);
     // Trace rays
-    
+
 //#paragma omp declare target map(tofrom:spheres)
 //#pragma omp target teams distribute parallel for
 
 #pragma omp declare target
-#pragma omp parallel for 
+#pragma omp parallel for
  for (unsigned y = 0; y < height; y++) {
 /*
         if (y % 50 == 0)
@@ -257,14 +422,26 @@ void render(const std::vector<Sphere> &spheres)
     std::ofstream ofs("./untitled.ppm", std::ios::out | std::ios::binary);
     ofs << "P6\n" << width << " " << height << "\n255\n";
     for (unsigned i = 0; i < width * height; ++i) {
-        ofs << (unsigned char)(std::min(float(1), image[i].x) * 255) <<
-            (unsigned char)(std::min(float(1), image[i].y) * 255) <<
-            (unsigned char)(std::min(float(1), image[i].z) * 255);
+        ofs << (unsigned char)(findMin(float(1), image[i].x) * 255) <<
+            (unsigned char)(findMin(float(1), image[i].y) * 255) <<
+            (unsigned char)(findMin(float(1), image[i].z) * 255);
+
+/*
+// Test to make sure my findMin() works
+            std::cout << (std::min(float(1), image[i].x) * 255) - (findMin(float(1), image[i].x) * 255) << std::endl;
+            std::cout << (std::min(float(1), image[i].y) * 255) - (findMin(float(1), image[i].y) * 255) << std::endl;
+            std::cout << (std::min(float(1), image[i].z) * 255) - (findMin(float(1), image[i].z) * 255) << std::endl;
+*/
+
+
     }
     ofs.close();
     delete [] image;
-  
+
 }
+
+
+
 //[comment]
 // In the main function, we will create the scene which is composed of 5 spheres
 // and 1 light (which is also a sphere). Then, once the scene description is complete
@@ -273,22 +450,49 @@ void render(const std::vector<Sphere> &spheres)
 int main(int argc, char **argv)
 {
     srand48(time(NULL) ^ getpid());
+    static const int NUM_SPHERES=8;
+/*
+    struct Sphere spheressssss[NUM_SPHERES];
+
+    for (int s=0; s<NUM_SPHERES; s++)
+    {
+        spheressssss[s].center = Vec3f(drand48()*30-15, drand48()*30-15, -50+drand48()*10-5);
+        spheressssss[s].radius = 5;
+        spheressssss[s].surfaceColor = Vec3f(drand48(), drand48(), drand48());
+        spheressssss[s].reflection = .2;
+        spheressssss[s].transparency = .5;
+    }
+
+*/
     std::vector<Sphere> spheres;
-    static const int NUM_SPHERES=500;
 
     for (int s=0; s<NUM_SPHERES; s++)
     {
         spheres.push_back(Sphere(Vec3f(drand48()*30-15, drand48()*30-15, -50+drand48()*10-5), 5, Vec3f(drand48(), drand48(), drand48()), .2, 0.5));
     }
-
+/*
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
     render(spheres);
 
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1);
 
-    std::cout <<"The execution time of " << NUM_SPHERES << " spheres was: " << time_span.count() << " seconds." << std::endl;
+    //std::cout <<"The execution time of " << NUM_SPHERES << " spheres was: " << time_span.count() << " seconds." << std::endl;
+
+    std::printf("The execution time of %d spheres was: %.03f seconds.\n" ,NUM_SPHERES, time_span.count());
+  */
+
+    clock_t t;
+    t = clock();
+    render(spheres);
+    t = clock() - t;
+
+    double runTime = ((double)t)/ CLOCKS_PER_SEC;
+
+     std::printf("The execution time of %d spheres was: %.03f seconds.\n" ,NUM_SPHERES, runTime);
+
+
 
     return 0;
 }
