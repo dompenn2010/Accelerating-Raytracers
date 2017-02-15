@@ -106,7 +106,7 @@ void mul_Vec3_Const(const Vec3f * v1, Vec3f * v2, float f)
 
 }
 
-void mul_Vec3_Vec3(Vec3f * v1, Vec3f * v2, Vec3f * v3)
+void mul_Vec3_Vec3(const Vec3f * v1, const Vec3f * v2, Vec3f * v3)
 {
   v3->x = v1->x * v2->x;
   v3->y = v1->y * v2->y;
@@ -336,21 +336,67 @@ Vec3f trace(
         //printf("SECOND x: %.2f\ny: %.2f\nz: %.2f\n",refldir1.x, refldir1.y, refldir1.z);
 
         refldir.normalize();
+
+
         Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
+        
+        
+        
+        
         Vec3f refraction = 0;
         // if the sphere is also transparent compute refraction ray (transmission)
         if (sphere->transparency) {
+            
             float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
-            float cosi = -nhit.dot(raydir);
+            
+            //float cosi = -nhit.dot(raydir);
+            float cosi;
+        
+            dot_Vec3(&nhit, &raydir, &cosi);
+            cosi = -cosi;
+
             float k = 1 - eta * eta * (1 - cosi * cosi);
-            Vec3f refrdir = raydir * eta + nhit * (eta *  cosi - sqrt(k));
+            
+            //                 v    * f   + v   * (f   *   f   -   f)
+            //Vec3f refrdir = raydir * eta + nhit * (eta *  cosi - sqrt(k));
+            Vec3f refrdir;
+            Vec3f rayEta;
+            mul_Vec3_Const(&raydir, &rayEta, eta);
+
+            Vec3f nhitEta;
+            mul_Vec3_Const(&nhit, &nhitEta, (eta *  cosi - sqrt(k)));
+            
+            add_Vec3_Vec3(&rayEta, &nhitEta, &refrdir);
+
+
+
+
             refrdir.normalize();
             refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
         }
         // the result is a mix of reflection and refraction (if the sphere is transparent)
-        surfaceColor = (
+  /*      surfaceColor = (
+            //(Vec3 * float) + (Vec3 * (1 - float) * float) * Vec3
             reflection * fresneleffect +
             refraction * (1 - fresneleffect) * sphere->transparency) * sphere->surfaceColor;
+  */          
+           
+        // Lets try this with added scopes
+        {
+            Vec3f temp1;
+            Vec3f temp2;
+            Vec3f temp3;
+            Vec3f temp4;
+            Vec3f temp5;
+            float tempF = (1 - fresneleffect) * sphere->transparency;
+
+            mul_Vec3_Const(&reflection, &temp1, fresneleffect);
+            mul_Vec3_Const(&refraction, &temp2, tempF);
+
+            add_Vec3_Vec3(&temp1, &temp2, &temp4);
+            mul_Vec3_Vec3(&temp4, &sphere->surfaceColor, &surfaceColor);
+        }
+
     }
     else {
         // it's a diffuse object, no need to raytrace any further
@@ -358,7 +404,25 @@ Vec3f trace(
             if (spheres[i].emissionColor.x > 0) {
                 // this is a light
                 Vec3f transmission = 1;
+
+                /*
+
+                Need to figure out how to get this called.
+
+                */
+
                 Vec3f lightDirection = spheres[i].center - phit;
+                printf("FIRST x: %.2f\ny: %.2f\nz: %.2f\n",lightDirection.x, lightDirection.y, lightDirection.z);
+
+                Vec3f center = spheres[i].center;
+                Vec3f lightDirection1;
+
+                sub_Vec3_Vec3(&center, &phit, &lightDirection1);
+
+                printf("SECOND x: %.2f\ny: %.2f\nz: %.2f\n",lightDirection1.x, lightDirection1.y, lightDirection1.z);
+
+
+
                 lightDirection.normalize();
                 for (unsigned j = 0; j < spheres.size(); ++j) {
                     if (i != j) {
@@ -369,9 +433,22 @@ Vec3f trace(
                         }
                     }
                 }
+
+                /*
                 surfaceColor += sphere->surfaceColor * transmission *
                 //std::max(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
                 findMin(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
+                */
+
+                Vec3f s1 = (surfaceColor += sphere->surfaceColor * transmission *
+                findMin(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor);
+
+                Vec3f s2 = (surfaceColor += sphere->surfaceColor * transmission *
+                std::max(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor);
+                printf("FIRST x: %.2f\ny: %.2f\nz: %.2f\n",s1.x, s1.y, s1.z);
+                printf("SECOND x: %.2f\ny: %.2f\nz: %.2f\n",s2.x, s2.y, s2.z);
+
+
             }
         }
     }
