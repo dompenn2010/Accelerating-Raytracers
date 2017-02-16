@@ -59,25 +59,32 @@ struct Vec3
     Vec3() : x(T(0)), y(T(0)), z(T(0)) {}
     Vec3(T xx) : x(xx), y(xx), z(xx) {}
     Vec3(T xx, T yy, T zz) : x(xx), y(yy), z(zz) {}
+  /*
     Vec3& normalize()
     {
         T nor2 = length2();
         if (nor2 > 0) {
             T invNor = 1 / sqrt(nor2);
+
             x *= invNor, y *= invNor, z *= invNor;
+
         }
+                    //printf("FIRST: x: %.2f\ny: %.2f\nz: %.2f\n", x, y, z);
+
         return *this;
     }
-    Vec3<T> operator * (const float &f) const { return Vec3<T>(x * f, y * f, z * f); }
+*/
+
+//    Vec3<T> operator * (const float &f) const { return Vec3<T>(x * f, y * f, z * f); }
     Vec3<T> operator * (const Vec3<T> &v) const { return Vec3<T>(x * v.x, y * v.y, z * v.z); }
     T dot(const Vec3<T> &v) const { return x * v.x + y * v.y + z * v.z; }
     Vec3<T> operator - (const Vec3<T> &v) const { return Vec3<T>(x - v.x, y - v.y, z - v.z); }
     Vec3<T> operator + (const Vec3<T> &v) const { return Vec3<T>(x + v.x, y + v.y, z + v.z); }
     Vec3<T>& operator += (const Vec3<T> &v) { x += v.x, y += v.y, z += v.z; return *this; }
-    Vec3<T>& operator *= (const Vec3<T> &v) { x *= v.x, y *= v.y, z *= v.z; return *this; }
-    Vec3<T> operator - () const { return Vec3<T>(-x, -y, -z); }
-    T length2() const { return x * x + y * y + z * z; }
-    T length() const { return sqrt(length2()); }
+//    Vec3<T>& operator *= (const Vec3<T> &v) { x *= v.x, y *= v.y, z *= v.z; return *this; }
+//    Vec3<T> operator - () const { return Vec3<T>(-x, -y, -z); }
+//    T length2() const { return x * x + y * y + z * z; }
+//    T length() const { return sqrt(length2()); }
 
 // Do I need this at all?
 //    friend std::ostream & operator << (std::ostream &os, const Vec3<T> &v)
@@ -173,6 +180,26 @@ void length_Vec3(Vec3f * v1, float * f)
   * f = sqrt((v1->x * v1->x) + (v1->y * v1->y) + (v1->z * v1->z));
 }
 
+//     T length2() const { return x * x + y * y + z * z; }
+
+// Need to pass in a vector to be mutated that is = to original
+void normalize(Vec3f * v1)
+    {
+        //T nor2 = length2();
+        float nor2;
+        length2_Vec3(v1, &nor2);
+
+        if (nor2 > 0) {
+ //           T invNor = 1 / sqrt(nor2);
+            float invNor = 1 / sqrt(nor2);
+
+            v1->x *= invNor;
+            v1->y *= invNor;
+            v1->z *= invNor;
+        }
+             //printf("SECOND x: %.2f\ny: %.2f\nz: %.2f\n",v2->x, v2->y, v2->z);
+
+    }
 
 /////////////////////////////////////////////////////////////
 /*                  TESTING CODE ABOVE HERE                */ 
@@ -289,7 +316,15 @@ Vec3f trace(
     Vec3f nhit;
     sub_Vec3_Vec3(&phit, &sphere->center, &nhit);
     
-    nhit.normalize(); // normalize normal direction
+
+    //nhit.normalize(); 
+   // printf("FIRST\nx: %.2f\ny: %.2f\nz: %.2f\n",nhit.x, nhit.y, nhit.z);
+
+    normalize(&nhit);
+    //printf("SECOND\nx: %.2f\ny: %.2f\nz: %.2f\n",nhit2.x, nhit2.y, nhit2.z);
+
+    
+    // normalize normal direction
     // If the normal and the view direction are not opposite to each other
     // reverse the normal direction. That also means we are inside the sphere so set
     // the inside bool to true. Finally reverse the sign of IdotN which we want
@@ -335,7 +370,9 @@ Vec3f trace(
         //printf("FIRST x: %.2f\ny: %.2f\nz: %.2f\n",refldir.x, refldir.y, refldir.z);
         //printf("SECOND x: %.2f\ny: %.2f\nz: %.2f\n",refldir1.x, refldir1.y, refldir1.z);
 
-        refldir.normalize();
+        //refldir.normalize();
+
+        normalize(&refldir);
 
 
         Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
@@ -371,7 +408,8 @@ Vec3f trace(
 
 
 
-            refrdir.normalize();
+            //refrdir.normalize();
+            normalize(&refrdir);
             refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
         }
         // the result is a mix of reflection and refraction (if the sphere is transparent)
@@ -423,7 +461,9 @@ Vec3f trace(
 
 
 
-                lightDirection.normalize();
+                //lightDirection.normalize();
+                normalize(&lightDirection);
+
                 for (unsigned j = 0; j < spheres.size(); ++j) {
                     if (i != j) {
                         float t0, t1;
@@ -488,7 +528,11 @@ void render(const std::vector<Sphere> &spheres)
             float xx = (2 * ((x + 0.5) * invWidth) - 1) * angle * aspectratio;
             float yy = (1 - 2 * ((y + 0.5) * invHeight)) * angle;
             Vec3f raydir(xx, yy, -1);
-            raydir.normalize();
+            
+            //raydir.normalize();
+            normalize(&raydir);
+
+            
             // *pixel = trace(Vec3f(0), raydir, spheres, 0);
 
             image[y*width+x] = trace(Vec3f(0), raydir, spheres, 0);

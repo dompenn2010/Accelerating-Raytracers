@@ -168,6 +168,8 @@ Vec3f trace(
         // are already normalized)
         Vec3f refldir = raydir - nhit * 2 * raydir.dot(nhit);
         refldir.normalize();
+        normalize(&refldir);
+
         Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
         Vec3f refraction = 0;
         // if the sphere is also transparent compute refraction ray (transmission)
