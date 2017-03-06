@@ -230,25 +230,10 @@ struct Sphere
     //[/comment]
 bool intersect(const Vec3f &rayorig, const Vec3f &raydir, float &t0, float &t1) const
     {
-        //Vec3f l = center - rayorig;
-        
-        Vec3f l;
-        sub_Vec3_Vec3(&center, &rayorig, &l);
-
-        //float tca = l.dot(raydir);
-
-        float tca;
-        dot_Vec3(&l, &raydir, &tca);
-
-
+        Vec3f l = center - rayorig;
+        float tca = l.dot(raydir);
         if (tca < 0) return false;
-        //float d2 = l.dot(l) - tca * tca;
-
-        float d2;
-        dot_Vec3(&l, &l, &d2);
-        d2 = d2 - tca * tca;
-
-
+        float d2 = l.dot(l) - tca * tca;
         if (d2 > radius2) return false;
         float thc = sqrt(radius2 - d2);
         t0 = tca - thc;
@@ -506,8 +491,8 @@ Vec3f trace(
             float k = 1 - eta * eta * (1 - cosi * cosi);
             
             //                 v    * f   + v   * (f   *   f   -   f)
-//            Vec3f refrdir = raydir * eta + nhit * (eta *  cosi - sqrt(k));
-            Vec3f refrdir;
+            Vec3f refrdir = raydir * eta + nhit * (eta *  cosi - sqrt(k));
+ /*           Vec3f refrdir;
             Vec3f rayEta;
             mul_Vec3_Const(&raydir, &rayEta, eta);
 
@@ -515,7 +500,7 @@ Vec3f trace(
             mul_Vec3_Const(&nhit, &nhitEta, (eta *  cosi - sqrt(k)));
             
             add_Vec3_Vec3(&rayEta, &nhitEta, &refrdir);
-
+*/
 
 
 
@@ -604,41 +589,9 @@ Vec3f trace(
                     }
                 }
 
-
-// Re-write me
-                //Vec3f surfaceColor2;
-                //Vec3f surfaceColor = surfaceColor;
-/*
-                surfaceColor2 = ((sphere->surfaceColor 
-                                * transmission) 
-                                * std::max(float(0), nhit.dot(lightDirection))) 
-                                * spheres[i].emissionColor;
-                surfaceColor2 = surfaceColor2 + surfaceColor;
-
-                surfaceColor += sphere->surfaceColor * transmission 
-                                *std::max(float(0), nhit.dot(lightDirection)) 
-                                * spheres[i].emissionColor;
-*/                  
-                {
-                    Vec3f s1;
-                    mul_Vec3_Vec3(&sphere->surfaceColor, &transmission, &s1);
-
-                    Vec3f s2;
-                    mul_Vec3_Const(&s1, &s2, std::max(float(0), nhit.dot(lightDirection)));
-                    
-                    Vec3f s3;
-                    mul_Vec3_Vec3(&s2, &spheres[i].emissionColor, &s3);
-                    //add_Vec3_Vec3(&surfaceColor, &s3, &surfaceColor);
-                    //surfaceColor = surfaceColor + s3;
-                    add_Vec3_Vec3(&surfaceColor, &s3, &surfaceColor);
-                }
-
-                //printf("\nFIRST x: %.2f\ny: %.2f\nz: %.2f\n",surfaceColor.x, surfaceColor.y, surfaceColor.z);
-                //printf("SECOND x: %.2f\ny: %.2f\nz: %.2f\n",surfaceColor2.x, surfaceColor2.y, surfaceColor2.z);
-                //printf("THIRD x: %.2f\ny: %.2f\nz: %.2f\n\n",surfaceColor1.x, surfaceColor1.y, surfaceColor1.z);
-
-
-
+                surfaceColor += sphere->surfaceColor * transmission *
+                std::max(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
+                
                 
 
 
@@ -646,10 +599,9 @@ Vec3f trace(
         }
     }
 
-    Vec3f result;
-    add_Vec3_Vec3(&surfaceColor, &sphere->emissionColor, &result);
-    return result;
-    //return surfaceColor + sphere->emissionColor;
+    //add_Vec3_Vec3(&surfaceColor, &sphere->emissionColor, result);
+
+    return surfaceColor + sphere->emissionColor;
 }
 
 

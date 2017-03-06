@@ -336,27 +336,17 @@ void render(const std::vector<Sphere> &spheres)
 //[/comment]
 int main(int argc, char **argv)
 {
-    srand48(time(NULL) ^ getpid());
-    static const int NUM_SPHERES=8;
-/*
-    struct Sphere spheressssss[NUM_SPHERES];
-
-    for (int s=0; s<NUM_SPHERES; s++)
-    {
-        spheressssss[s].center = Vec3f(drand48()*30-15, drand48()*30-15, -50+drand48()*10-5);
-        spheressssss[s].radius = 5;
-        spheressssss[s].surfaceColor = Vec3f(drand48(), drand48(), drand48());
-        spheressssss[s].reflection = .2;
-        spheressssss[s].transparency = .5;
-    }
-
-*/
+      srand48(13);
     std::vector<Sphere> spheres;
-
-    for (int s=0; s<NUM_SPHERES; s++)
-    {
-        spheres.push_back(Sphere(Vec3f(drand48()*30-15, drand48()*30-15, -50+drand48()*10-5), 5, Vec3f(drand48(), drand48(), drand48()), .2, 0.5));
-    }
+    // position, radius, surface color, reflectivity, transparency, emission color
+    spheres.push_back(Sphere(Vec3f( 0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
+    spheres.push_back(Sphere(Vec3f( 0.0,      0, -20),     4, Vec3f(1.00, 0.32, 0.36), 1, 0.5));
+    spheres.push_back(Sphere(Vec3f( 5.0,     -1, -15),     2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
+    spheres.push_back(Sphere(Vec3f( 5.0,      0, -25),     3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
+    spheres.push_back(Sphere(Vec3f(-5.5,      0, -15),     3, Vec3f(0.90, 0.90, 0.90), 1, 0.0));
+    // light
+    spheres.push_back(Sphere(Vec3f( 0.0,     20, -30),     3, Vec3f(0.00, 0.00, 0.00), 0, 0.0, Vec3f(3)));
+    render(spheres);
 /*
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
