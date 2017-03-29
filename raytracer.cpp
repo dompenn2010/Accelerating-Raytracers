@@ -25,9 +25,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
+#include <cstdlib>
 
-
-//#include <cstdlib>
 //#include <cstdio>
 //#include <cmath>
 //#include <iostream>
@@ -257,7 +256,7 @@ bool intersect(const Vec3f &rayorig, const Vec3f &raydir, float &t0, float &t1) 
         return true;
     }
 };
-/*
+
 void intersect1(const Vec3f * rayorig, const Vec3f * raydir, float * t0, float * t1, bool * hit, const Sphere * sphere) //const
     {
 
@@ -279,8 +278,8 @@ void intersect1(const Vec3f * rayorig, const Vec3f * raydir, float * t0, float *
 
         if (tca < 0)
         {
-        //  *hit = false;
-         // return;
+          *hit = false;
+          return;
         }
 
         //float d2 = l.dot(l) - tca * tca;
@@ -296,22 +295,23 @@ void intersect1(const Vec3f * rayorig, const Vec3f * raydir, float * t0, float *
         //printf("SECOND: %.2f\n\n", d21);
 
         if (d2 > (sphere ->radius2)) {
-         // *hit = false;
-         // return;
+          *hit = false;
+          return;
         }
 
         float thc = sqrt((sphere ->radius2) - d2);
         *t0 = tca - thc;
         *t1 = tca + thc;
 
-        // *hit = true;
-        //return;
+        *hit = true;
+        return;
+        
     }
-*/
+
 //[comment]
 // This variable controls the maximum recursion depth
 //[/comment]
-#define MAX_RAY_DEPTH 5
+#define MAX_RAY_DEPTH 1
 
 float mix(const float &a, const float &b, const float &mix)
 {
@@ -334,8 +334,10 @@ float mix(const float &a, const float &b, const float &mix)
 Vec3f trace(  
     const Vec3f &rayorig,
     const Vec3f &raydir,
-    const std::vector<Sphere> &spheres,
-    const int &depth
+    //const std::vector<Sphere> &spheres,
+    const Sphere* spheres,
+    int sphereCount,
+    const int depth
     //, Vec3f * result
     )
 {
@@ -343,16 +345,23 @@ Vec3f trace(
     float tnear = INFINITY;
     const Sphere* sphere = NULL;
     // find intersection of this ray with the sphere in the scene
-    for (unsigned i = 0; i < spheres.size(); ++i) {
+    //for (unsigned i = 0; i < spheres.size(); ++i) {
+      for (unsigned i = 0; i < sphereCount; ++i) {
         float t0 = INFINITY, t1 = INFINITY;
        
        
-       // bool sphereIntersect;       
-        //intersect1(&rayorig, &raydir, &t0, &t1, &sphereIntersect, &sphere[i]);
+        bool sphereIntersect;       
+        //printf("1\n");
+
+        intersect1(&rayorig, &raydir, &t0, &t1, &sphereIntersect, &spheres[i]);
+        // causes segment fault
+        //printf("2\n");
         //printf("1: %d\n", sphereIntersect);
+        //fflush(stdout);        //  Flush the stream.
         //printf("2: %d\n\n", spheres[i].intersect(rayorig, raydir, t0, t1));
 
-        if (spheres[i].intersect(rayorig, raydir, t0, t1)) {
+        //if (spheres[i].intersect(rayorig, raydir, t0, t1)) {
+          if (sphereIntersect){
             if (t0 < 0) t0 = t1;
             if (t0 < tnear) {
                 tnear = t0;
@@ -459,7 +468,7 @@ Vec3f trace(
             add_Vec3_Vec3(&phit, &rayOrigScaled, &rayOrigMul);
             
 }
-            Vec3f reflection = trace(rayOrigMul, refldir, spheres, depth + 1); 
+            Vec3f reflection = trace(rayOrigMul, refldir, spheres, sphereCount, depth + 1); 
 
 /*
             Vec3f reflection = trace(phit + nhit * bias, refldir, spheres, depth + 1);
@@ -531,7 +540,7 @@ Vec3f trace(
 
             
 }
-            refraction = trace(v1, refrdir, spheres, depth + 1); 
+            refraction = trace(v1, refrdir, spheres, sphereCount, depth + 1); 
             //Vec3f refraction2 = trace(phit - (nhit * bias), refrdir, spheres, depth + 1);
 
             /*
@@ -575,7 +584,7 @@ Vec3f trace(
     }
     else {
         // it's a diffuse object, no need to raytrace any further
-        for (unsigned i = 0; i < spheres.size(); ++i) {
+        for (unsigned i = 0; i < sphereCount ;++i) {
             if (spheres[i].emissionColor.x > 0) {
                 // this is a light
                 Vec3f transmission = 1;
@@ -594,10 +603,22 @@ Vec3f trace(
                 //lightDirection.normalize();
                 normalize(&lightDirection);
 
-                for (unsigned j = 0; j < spheres.size(); ++j) {
+                for (unsigned j = 0; j < sphereCount; ++j) {
                     if (i != j) {
                         float t0, t1;
-                        if (spheres[j].intersect(phit + nhit * bias, lightDirection, t0, t1)) {
+                        //if (spheres[j].intersect(phit + nhit * bias, lightDirection, t0, t1)) {
+
+                        Vec3f rayOrig;
+
+                    {
+                        Vec3f rayOrigScaled;
+                        mul_Vec3_Const(&nhit, &rayOrigScaled, bias);  
+                        add_Vec3_Vec3(&phit, &rayOrigScaled, &rayOrig);
+                                    
+                    }
+                                          
+
+                        if (spheres[j].intersect(rayOrig, lightDirection, t0, t1)) {
                             transmission = 0;
                             break;
                         }
@@ -624,8 +645,13 @@ Vec3f trace(
                     mul_Vec3_Vec3(&sphere->surfaceColor, &transmission, &s1);
 
                     Vec3f s2;
-                    mul_Vec3_Const(&s1, &s2, std::max(float(0), nhit.dot(lightDirection)));
-                    
+                    float nhitDot;
+                    dot_Vec3(&nhit, &lightDirection, &nhitDot);
+
+
+                    //mul_Vec3_Const(&s1, &s2, std::max(float(0), nhit.dot(lightDirection)));
+                    mul_Vec3_Const(&s1, &s2, std::max(float(0), nhitDot));
+
                     Vec3f s3;
                     mul_Vec3_Vec3(&s2, &spheres[i].emissionColor, &s3);
                     //add_Vec3_Vec3(&surfaceColor, &s3, &surfaceColor);
@@ -658,10 +684,11 @@ Vec3f trace(
 // trace it and return a color. If the ray hits a sphere, we return the color of the
 // sphere at the intersection point, else we return the background color.
 //[/comment]
-void render(const std::vector<Sphere> &spheres)
+//void render(const std::vector<Sphere> &spheres)
+    void render(const Sphere* spheres, int sphereCount)
 {
-    unsigned width = 640, height = 480;
-    //unsigned width = 4096, height = 2160;
+    //unsigned width = 640, height = 480;
+    unsigned width = 4096, height = 2160;
     //unsigned width = 2048, height = 1024;
     Vec3f *image = new Vec3f[width * height], *pixel = image;
     float invWidth = 1 / float(width), invHeight = 1 / float(height);
@@ -672,8 +699,18 @@ void render(const std::vector<Sphere> &spheres)
 //#paragma omp declare target map(tofrom:spheres)
 //#pragma omp target teams distribute parallel for
 
-#pragma omp declare target
-#pragma omp parallel for
+//#pragma omp declare target
+//#pragma omp parallel for
+ //#pragma acc kernels
+ 
+// #pragma acc parallel
+// #pragma acc loop collapse(2)
+ 
+//#pragma acc parallel
+//#pragma acc loop collapse(2)
+ 
+ //#pragma acc kernels loop num_gangs(200), num_workers(64)
+ #pragma acc kernels
  for (unsigned y = 0; y < height; y++) {
 /*
         if (y % 50 == 0)
@@ -692,7 +729,7 @@ void render(const std::vector<Sphere> &spheres)
             
             // *pixel = trace(Vec3f(0), raydir, spheres, 0);
 
-            image[y*width+x] = trace(Vec3f(0), raydir, spheres, 0);
+            image[y*width+x] = trace(Vec3f(0), raydir, spheres, sphereCount, 0);
 
         /*
             {
@@ -702,7 +739,7 @@ void render(const std::vector<Sphere> &spheres)
 
         }
     }
-#pragma omp end declare target
+//#pragma omp end declare target
    // Save result to a PPM image (keep these flags if you compile under Windows)
     std::ofstream ofs("./untitled.ppm", std::ios::out | std::ios::binary);
     ofs << "P6\n" << width << " " << height << "\n255\n";
@@ -734,8 +771,8 @@ void render(const std::vector<Sphere> &spheres)
 //[/comment]
 int main(int argc, char **argv)
 {
-    srand48(time(NULL) ^ getpid());
-    static const int NUM_SPHERES=8;
+//    srand48(time(NULL) ^ getpid());
+//    static const int NUM_SPHERES=8;
 /*
     struct Sphere spheressssss[NUM_SPHERES];
 
@@ -749,29 +786,52 @@ int main(int argc, char **argv)
     }
 
 */
-
+/*
 /////////// Randomized ///////////////
-    /*
+    
     std::vector<Sphere> spheres;
 
     for (int s=0; s<NUM_SPHERES; s++)
     {
         spheres.push_back(Sphere(Vec3f(drand48()*30-15, drand48()*30-15, -50+drand48()*10-5), 5, Vec3f(drand48(), drand48(), drand48()), .2, 0.5));
     }
-    */
+    
+/////////// Randomized ///////////////
+*/
 /////////// NON RANDOM ///////////////
+//    srand48(13);
+    //std::vector<Sphere> spheres;
+    Sphere * spheres;
+    int sphereCount = 1000;
 
-    srand48(13);
-    std::vector<Sphere> spheres;
+    spheres = (Sphere*)malloc(sphereCount * sizeof(Sphere));
+    for (int s=0; s<sphereCount; s++)
+        {
+            spheres[s]=(Sphere(Vec3f(drand48()*30-15, drand48()*30-15, -50+drand48()*10-5), 5, Vec3f(drand48(), drand48(), drand48()), .2, 0.5));
+        }
+
     // position, radius, surface color, reflectivity, transparency, emission color
-    spheres.push_back(Sphere(Vec3f( 0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
+    /*spheres.push_back(Sphere(Vec3f( 0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
     spheres.push_back(Sphere(Vec3f( 0.0,      0, -20),     4, Vec3f(1.00, 0.32, 0.36), 1, 0.5));
     spheres.push_back(Sphere(Vec3f( 5.0,     -1, -15),     2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
     spheres.push_back(Sphere(Vec3f( 5.0,      0, -25),     3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
     spheres.push_back(Sphere(Vec3f(-5.5,      0, -15),     3, Vec3f(0.90, 0.90, 0.90), 1, 0.0));
     // light
     spheres.push_back(Sphere(Vec3f( 0.0,     20, -30),     3, Vec3f(0.00, 0.00, 0.00), 0, 0.0, Vec3f(3)));
-    render(spheres);
+    */
+/*
+    spheres[0]=(Sphere(Vec3f( 0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
+    spheres[1]=(Sphere(Vec3f( 0.0,      0, -20),     4, Vec3f(1.00, 0.32, 0.36), 1, 0.5));
+    spheres[2]=(Sphere(Vec3f( 5.0,     -1, -15),     2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
+    spheres[3]=(Sphere(Vec3f( 5.0,      0, -25),     3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
+    spheres[4]=(Sphere(Vec3f(-5.5,      0, -15),     3, Vec3f(0.90, 0.90, 0.90), 1, 0.0));
+    // light
+    spheres[5]=(Sphere(Vec3f( 0.0,     20, -30),     3, Vec3f(0.00, 0.00, 0.00), 0, 0.0, Vec3f(3)));
+    */
+/////////// NON RANDOM ///////////////
+
+
+    //render(spheres);
 
 /*
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
@@ -788,12 +848,12 @@ int main(int argc, char **argv)
 
     clock_t t;
     t = clock();
-    render(spheres);
+    render(spheres, sphereCount);
     t = clock() - t;
 
     double runTime = ((double)t)/ CLOCKS_PER_SEC;
 
-    std::printf("The execution time of %d spheres was: %.03f seconds.\n" ,NUM_SPHERES, runTime);
+    std::printf("The execution time of %d spheres was: %.03f seconds.\n" ,sphereCount, runTime);
 
 
 
