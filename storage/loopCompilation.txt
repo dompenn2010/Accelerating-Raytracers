@@ -1,0 +1,235 @@
+"raytracer.cpp", line 290: warning: variable "dd" was declared but never
+          referenced
+          float dd = 1.0;
+                ^
+
+"raytracer.cpp", line 693: warning: variable "pixel" was declared but never
+          referenced
+      Vec3f *image = new Vec3f[width * height], *pixel = image;
+                                                 ^
+
+mul_Vec3_Const(const Vec3<float> *, Vec3<float> *, float):
+    110, Generating implicit acc routine seq
+mul_Vec3_Vec3(const Vec3<float> *, const Vec3<float> *, Vec3<float> *):
+    118, Generating implicit acc routine seq
+dot_Vec3(const Vec3<float> *, const Vec3<float> *, float *):
+    126, Generating implicit acc routine seq
+sub_Vec3_Vec3(const Vec3<float> *, const Vec3<float> *, Vec3<float> *):
+    133, Generating implicit acc routine seq
+add_Vec3_Vec3(const Vec3<float> *, const Vec3<float> *, Vec3<float> *):
+    142, Generating implicit acc routine seq
+negate_Vec3(Vec3<float> *):
+    166, Generating implicit acc routine seq
+length2_Vec3(Vec3<float> *, float *):
+    174, Generating implicit acc routine seq
+normalize(Vec3<float> *):
+    188, Generating implicit acc routine seq
+intersect1(const Vec3<float> *, const Vec3<float> *, float *, float *, bool *, const Sphere *):
+    261, Generating implicit acc routine seq
+    264, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+mix(const float &, const float &, const float &):
+    317, Generating implicit acc routine seq
+trace(const Vec3<float> &, const Vec3<float> &, const Sphere *, int, int):
+    343, Generating implicit acc routine seq
+    349, Scalar last value needed after loop for sphere at line 373
+         Scalar last value needed after loop for tnear at line 390
+         Scalar last value needed after loop for sphere at line 404,433,505,575,581,645,676
+         Loop not vectorized/parallelized: contains call
+    374, Vec3<float>::Vec3(float) inlined, size=3 (inline) file raytracer.cpp (59)
+    384, Vec3<float>::Vec3(float) inlined, size=3 (inline) file raytracer.cpp (59)
+    388, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    389, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    403, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    448, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    453, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    464, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    466, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    503, Vec3<float>::Vec3(float) inlined, size=3 (inline) file raytracer.cpp (59)
+    519, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    520, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    523, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    535, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    537, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    570, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    571, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    572, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    573, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    574, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    590, Vec3<float>::Vec3(float) inlined, size=3 (inline) file raytracer.cpp (59)
+    595, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    606, Zero trip check eliminated
+         Loop not vectorized/parallelized: potential early exits
+    611, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    614, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    621, Sphere::intersect(const Vec3<float> &, const Vec3<float> &, float &, float &) const inlined, size=15 (inline) file raytracer.cpp (231)
+         234, Vec3<float>::Vec3() inlined, size=3 ( inline ) file raytracer.cpp (58)
+    622, Vec3<float>::Vec3(float) inlined, size=3 (inline) file raytracer.cpp (59)
+    644, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    647, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    653, const T1 & std::max<float>(const T1 &, const T1 &) inlined, size=3 (inline) file raytracer.cpp (210)
+    655, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+    675, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+render(const Sphere *, int):
+    696, Generating implicit copyout(image[:])
+         Accelerator kernel generated
+         Generating Tesla code
+        708, #pragma acc loop gang /* blockIdx.x */
+        715, #pragma acc loop vector(128) /* threadIdx.x */
+    696, Local memory used for _T22383128_1532,raydir
+    715, Loop is parallelizable
+    718, Vec3<float>::Vec3(float, float, float) inlined, size=3 (inline) file raytracer.cpp (60)
+    726, Vec3<float>::Vec3(float) inlined, size=3 (inline) file raytracer.cpp (59)
+    738, std::operator |(std::_Ios_Openmode, std::_Ios_Openmode) inlined, size=2 (inline) file raytracer.cpp (129)
+    738, std::basic_ofstream<char, std::char_traits<char>>::basic_ofstream(const char *, std::_Ios_Openmode) inlined, size=21 (inline)
+         626, std::basic_ios<char, std::char_traits<char>>::basic_ios() [subobject] inlined, size=11 ( inline )
+                0, std::basic_ios<char, std::char_traits<char>>::basic_ios() inlined, size=7 ( inline ) file raytracer.cpp (453)
+    739, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, const char *) inlined, size=20 (inline) file raytracer.cpp (506)
+         510, std::char_traits<char>::length(const char *) inlined, size=2 (inline) file raytracer.cpp (263)
+         739, std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate) inlined, size=8 (inline) file raytracer.cpp (148)
+              148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 (inline) file raytracer.cpp (128)
+                   739, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, const char *) inlined, size=20 (inline) file raytracer.cpp (506)
+                        510, std::char_traits<char>::length(const char *) inlined, size=2 (inline) file raytracer.cpp (263)
+                        739, std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate) inlined, size=8 (inline) file raytracer.cpp (148)
+                             148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 (inline) file raytracer.cpp (128)
+                                  739, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, const char *) inlined, size=20 (inline) file raytracer.cpp (506)
+                                       510, std::char_traits<char>::length(const char *) inlined, size=2 (inline) file raytracer.cpp (263)
+                                       739, std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate) inlined, size=8 (inline) file raytracer.cpp (148)
+                                            148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 (inline) file raytracer.cpp (128)
+                                            148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 (inline) file raytracer.cpp (167)
+                             148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 (inline) file raytracer.cpp (167)
+                   739, std::basic_ostream<char, std::char_traits<char>>::operator <<(unsigned int) inlined, size=2 (inline) file raytracer.cpp (192)
+              148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 (inline) file raytracer.cpp (167)
+    739, std::basic_ostream<char, std::char_traits<char>>::operator <<(unsigned int) inlined, size=2 (inline) file raytracer.cpp (192)
+    739, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() inlined, size=24 (inline)
+           0, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() [subobject] inlined, size=12 (inline) file raytracer.cpp (657)
+              657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+         657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline) file raytracer.cpp (0)
+                0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+    740, Loop not vectorized/parallelized: contains call
+    741, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, unsigned char) inlined, size=5 (inline) file raytracer.cpp (469)
+         469, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, char) inlined, size=2 (inline) file raytracer.cpp (458)
+              741, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, unsigned char) inlined, size=5 (inline) file raytracer.cpp (469)
+                   469, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, char) inlined, size=2 (inline) file raytracer.cpp (458)
+    741, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() inlined, size=24 (inline)
+           0, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() [subobject] inlined, size=12 (inline) file raytracer.cpp (657)
+              657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+         657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline) file raytracer.cpp (0)
+                0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+         469, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, char) inlined, size=2 (inline) file raytracer.cpp (458)
+    754, std::basic_ofstream<char, std::char_traits<char>>::close() inlined, size=16 (inline) file raytracer.cpp (737)
+         739, std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate) inlined, size=8 ( inline ) file raytracer.cpp (148)
+              148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 (inline) file raytracer.cpp (128)
+              148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 (inline) file raytracer.cpp (167)
+    755, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() inlined, size=24 (inline)
+           0, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() [subobject] inlined, size=12 (inline) file raytracer.cpp (657)
+              657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+         657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline) file raytracer.cpp (0)
+                0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+main:
+    804, Sphere::Sphere(const Vec3<float> &, const float &, const Vec3<float> &, const float &, const float &, const Vec3<float> &) inlined, size=8 (inline) file raytracer.cpp (226)
+    804, Vec3<float>::Vec3(float) inlined, size=3 (inline) file raytracer.cpp (59)
+    804, Vec3<float>::Vec3(float, float, float) inlined, size=3 (inline) file raytracer.cpp (60)
+         802, Loop not vectorized/parallelized: contains call
+Vec3<float>::Vec3():
+     58, Generating implicit acc routine seq
+Vec3<float>::Vec3() [subobject]:
+      0, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+Vec3<float>::Vec3(float):
+     59, Generating implicit acc routine seq
+Vec3<float>::Vec3(float) [subobject]:
+      0, Vec3<float>::Vec3(float) inlined, size=3 (inline) file raytracer.cpp (59)
+Vec3<float>::Vec3(float, float, float) [subobject]:
+      0, Vec3<float>::Vec3(float, float, float) inlined, size=3 (inline) file raytracer.cpp (60)
+Sphere::Sphere(const Vec3<float> &, const float &, const Vec3<float> &, const float &, const float &, const Vec3<float> &) [subobject]:
+      0, Sphere::Sphere(const Vec3<float> &, const float &, const Vec3<float> &, const float &, const float &, const Vec3<float> &) inlined, size=8 (inline) file raytracer.cpp (226)
+Sphere::intersect(const Vec3<float> &, const Vec3<float> &, float &, float &) const:
+    231, Generating implicit acc routine seq
+    234, Vec3<float>::Vec3() inlined, size=3 (inline) file raytracer.cpp (58)
+std::basic_streambuf<char, std::char_traits<char>>::~basic_streambuf() [deleting]:
+      0, std::basic_streambuf<char, std::char_traits<char>>::~basic_streambuf() inlined, size=3 (inline) file raytracer.cpp (193)
+std::basic_streambuf<char, std::char_traits<char>>::~basic_streambuf() [subobject]:
+      0, std::basic_streambuf<char, std::char_traits<char>>::~basic_streambuf() inlined, size=3 (inline) file raytracer.cpp (193)
+std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate):
+    148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 (inline) file raytracer.cpp (128)
+    148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 (inline) file raytracer.cpp (167)
+std::basic_ios<char, std::char_traits<char>>::~basic_ios() [deleting]:
+      0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject]:
+      0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+std::basic_ios<char, std::char_traits<char>>::basic_ios() [subobject]:
+      0, std::basic_ios<char, std::char_traits<char>>::basic_ios() inlined, size=7 (inline) file raytracer.cpp (453)
+std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [deleting]:
+      0, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() inlined, size=14 (inline)
+         657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+         657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline) file raytracer.cpp (0)
+                0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+std::basic_ostream<char, std::char_traits<char>>::~basic_ostream():
+      0, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+     91, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline)
+           0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+std::basic_ostream<char, std::char_traits<char>>::basic_ostream():
+    362, std::basic_ostream<char, std::char_traits<char>>::basic_ostream() [subobject] inlined, size=6 (inline) file raytracer.cpp (362)
+    362, std::basic_ios<char, std::char_traits<char>>::basic_ios() [subobject] inlined, size=11 (inline)
+           0, std::basic_ios<char, std::char_traits<char>>::basic_ios() inlined, size=7 (inline) file raytracer.cpp (453)
+std::basic_filebuf<char, std::char_traits<char>>::~basic_filebuf():
+    215, std::basic_streambuf<char, std::char_traits<char>>::~basic_streambuf() inlined, size=3 (inline) file raytracer.cpp (193)
+    215, std::basic_streambuf<char, std::char_traits<char>>::~basic_streambuf() [subobject] inlined, size=4 (inline)
+           0, std::basic_streambuf<char, std::char_traits<char>>::~basic_streambuf() inlined, size=3 ( inline ) file raytracer.cpp (193)
+std::basic_ofstream<char, std::char_traits<char>>::basic_ofstream(const char *, std::_Ios_Openmode) [subobject]:
+    626, std::basic_ostream<char, std::char_traits<char>>::basic_ostream() [subobject] inlined, size=6 (inline) file raytracer.cpp (362)
+    626, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() inlined, size=14 (inline)
+         657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+         657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline) file raytracer.cpp (0)
+                0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+    627, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() inlined, size=14 (inline)
+         657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+         657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline) file raytracer.cpp (0)
+                0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+    628, std::basic_ofstream<char, std::char_traits<char>>::open(const char *, std::_Ios_Openmode) inlined, size=22 (inline) file raytracer.cpp (698)
+         699, std::operator |(std::_Ios_Openmode, std::_Ios_Openmode) inlined, size=2 ( inline ) file raytracer.cpp (129)
+         700, std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate) inlined, size=8 ( inline ) file raytracer.cpp (148)
+              148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 ( inline ) file raytracer.cpp (128)
+              148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 ( inline ) file raytracer.cpp (167)
+    628, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() inlined, size=14 (inline)
+         657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+         657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline) file raytracer.cpp (0)
+                0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+std::basic_ofstream<char, std::char_traits<char>>::basic_ofstream(const char *, std::_Ios_Openmode):
+    626, std::basic_ios<char, std::char_traits<char>>::basic_ios() [subobject] inlined, size=11 (inline)
+           0, std::basic_ios<char, std::char_traits<char>>::basic_ios() inlined, size=7 (inline) file raytracer.cpp (453)
+std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() [subobject]:
+    657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() [deleting]:
+      0, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() inlined, size=24 (inline)
+           0, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() [subobject] inlined, size=12 (inline) file raytracer.cpp (657)
+              657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 (inline) file raytracer.cpp (91)
+         657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline) file raytracer.cpp (0)
+                0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream():
+      0, std::basic_ofstream<char, std::char_traits<char>>::~basic_ofstream() [subobject] inlined, size=12 (inline) file raytracer.cpp (657)
+         657, std::basic_ostream<char, std::char_traits<char>>::~basic_ostream() [subobject] inlined, size=4 ( inline ) file raytracer.cpp (91)
+    657, std::basic_ios<char, std::char_traits<char>>::~basic_ios() [subobject] inlined, size=4 (inline)
+           0, std::basic_ios<char, std::char_traits<char>>::~basic_ios() inlined, size=3 (inline) file raytracer.cpp (272)
+std::basic_ofstream<char, std::char_traits<char>>::open(const char *, std::_Ios_Openmode):
+    699, std::operator |(std::_Ios_Openmode, std::_Ios_Openmode) inlined, size=2 (inline) file raytracer.cpp (129)
+    700, std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate) inlined, size=8 (inline) file raytracer.cpp (148)
+         148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 (inline) file raytracer.cpp (128)
+         148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 (inline) file raytracer.cpp (167)
+std::basic_ofstream<char, std::char_traits<char>>::close():
+    739, std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate) inlined, size=8 (inline) file raytracer.cpp (148)
+         148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 (inline) file raytracer.cpp (128)
+         148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 (inline) file raytracer.cpp (167)
+std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, unsigned char):
+    469, std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, char) inlined, size=2 (inline) file raytracer.cpp (458)
+std::basic_ostream<char, T1> & std::operator <<<std::char_traits<char>>(std::basic_ostream<char, T1> &, const char *):
+    508, std::basic_ios<char, std::char_traits<char>>::setstate(std::_Ios_Iostate) inlined, size=8 (inline) file raytracer.cpp (148)
+         148, std::basic_ios<char, std::char_traits<char>>::rdstate() const inlined, size=2 (inline) file raytracer.cpp (128)
+         148, std::operator |(std::_Ios_Iostate, std::_Ios_Iostate) inlined, size=2 (inline) file raytracer.cpp (167)
+    510, std::char_traits<char>::length(const char *) inlined, size=2 (inline) file raytracer.cpp (263)
+const T1 & std::max<float>(const T1 &, const T1 &):
+     36, include "fstream"
+          40, include "istream"
+               40, include "ios"
+                    41, include "char_traits.h"
+                         41, include "stl_algobase.h"
+                             210, Generating implicit acc routine seq

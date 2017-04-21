@@ -1,3 +1,4 @@
 g++ -fopenmp -std=c++11 -O3 -Wall raytracer.cpp -o raytracer
 icc -mmic -openmp -std=c++0x -O3 -Wall -o raytracer.mic raytracer.cpp
-pgc++ -fast -acc -Minfo=all raytracer.cpp 
+pgc++ -fast -acc -Minfo=all raytracer.cpp
+pgc++ -std=c++11 -ta=tesla:managed -Minfo=all Collapsed_NR_NRC.cpp 
